@@ -27,3 +27,6 @@ class Constants:
     
     DELTA_TEXT = "text_delta"
     DELTA_INPUT_JSON = "input_json_delta"
+    DELTA_THINKING = "thinking_delta"
+
+    CONTENT_THINKING = "thinking"

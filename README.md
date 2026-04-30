@@ -2,11 +2,11 @@
 
 A proxy server that enables **Claude Code** to work with OpenAI-compatible API providers. Convert Claude API requests to OpenAI API calls, allowing you to use various LLM providers through the Claude Code CLI.
 
-![Claude Code Proxy](demo.png)
-
 ## Features
 
-- **Full Claude API Compatibility**: Complete `/v1/messages` endpoint support
+- **Full Claude API Compatibility** :
+  - Complete `/v1/messages` endpoint support
+  - **(2026-04-29) Thinking Support** : Convert `reasoning_content` to Claude API thinking blocks
 - **Multiple Provider Support**: OpenAI, Azure OpenAI, local models (Ollama), and any OpenAI-compatible API
 - **Smart Model Mapping**: Configure BIG and SMALL models via environment variables
 - **Function Calling**: Complete tool use support with proper conversion

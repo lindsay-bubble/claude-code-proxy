@@ -126,6 +126,12 @@ def convert_claude_to_openai(
         else:
             openai_request["tool_choice"] = "auto"
 
+    # Handle thinking/extended thinking
+    if claude_request.thinking and claude_request.thinking.enabled:
+        # Ensure max_tokens is sufficient for thinking output
+        if openai_request["max_tokens"] < 16000:
+            openai_request["max_tokens"] = 16000
+
     return openai_request
 
 
@@ -177,7 +183,10 @@ def convert_claude_assistant_message(msg: ClaudeMessage) -> Dict[str, Any]:
         return {"role": Constants.ROLE_ASSISTANT, "content": msg.content}
 
     for block in msg.content:
-        if block.type == Constants.CONTENT_TEXT:
+        if block.type == Constants.CONTENT_THINKING:
+            # Skip thinking blocks - not supported in OpenAI format
+            continue
+        elif block.type == Constants.CONTENT_TEXT:
             text_parts.append(block.text)
         elif block.type == Constants.CONTENT_TOOL_USE:
             tool_calls.append(

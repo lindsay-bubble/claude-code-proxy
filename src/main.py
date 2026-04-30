@@ -1,10 +1,47 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from src.api.endpoints import router as api_router
 import uvicorn
 import sys
+import logging
 from src.core.config import config
 
 app = FastAPI(title="Claude-to-OpenAI API Proxy", version="1.0.0")
+
+logger = logging.getLogger(__name__)
+
+
+@app.exception_handler(Exception)
+async def claude_error_handler(request: Request, exc: Exception):
+    """Return all errors in Claude API format so Claude Code can parse them."""
+    logger.error(f"{type(exc).__name__}: {exc}")
+    import traceback
+    logger.error(traceback.format_exc())
+
+    status_code = 500
+    error_type = "api_error"
+
+    from fastapi import HTTPException
+    if isinstance(exc, HTTPException):
+        status_code = exc.status_code
+        if status_code == 401:
+            error_type = "authentication_error"
+        elif status_code == 429:
+            error_type = "rate_limit_error"
+        elif status_code == 400:
+            error_type = "invalid_request_error"
+
+    return JSONResponse(
+        status_code=status_code,
+        content={
+            "type": "error",
+            "error": {
+                "type": error_type,
+                "message": str(exc.detail) if isinstance(exc, HTTPException) else str(exc),
+            },
+        },
+    )
+
 
 app.include_router(api_router)
 

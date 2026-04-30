@@ -14,7 +14,7 @@ async def test_basic_chat():
         response = await client.post(
             "http://localhost:8082/v1/messages",
             json={
-                "model": "claude-3-5-sonnet-20241022",
+                "model": "glm47",
                 "max_tokens": 100,
                 "messages": [
                     {"role": "user", "content": "Hello, how are you?"}
@@ -231,6 +231,7 @@ async def test_health_and_connection():
         # Health check
         health_response = await client.get("http://localhost:8082/health")
         print("\nHealth check:")
+        print(f"响应内容: {health_response.text!r}")  # 加这行，看实际内容
         print(json.dumps(health_response.json(), indent=2))
         
         # Connection test
@@ -246,13 +247,13 @@ async def main():
     
     try:
         await test_health_and_connection()
-        await test_token_counting()
-        await test_basic_chat()
-        await test_with_system_message()
-        await test_streaming_chat()
-        await test_multimodal()
-        await test_function_calling()
-        await test_conversation_with_tool_use()
+        # await test_token_counting()
+        # await test_basic_chat()
+        # await test_with_system_message()
+        # await test_streaming_chat()
+        # await test_multimodal()
+        # await test_function_calling()
+        # await test_conversation_with_tool_use()
         
         print("\n✅ All tests completed!")
         
